@@ -356,7 +356,7 @@ streamlit run component-template/template/my_component/__init__.py
 Then go to the directory `component-template/template/my component/frontend/src/MyComponent.tsx` and place the following code:
 
 
-```python
+```javascript
 import {
   Streamlit,
   StreamlitComponentBase,
