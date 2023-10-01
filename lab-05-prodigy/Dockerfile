@@ -17,7 +17,7 @@ COPY prodigy-1.11.10-cp39-cp39-linux_x86_64.whl /home/
 COPY homebrewing.jsonl.bz2 /home/
 COPY programming.jsonl.bz2 /home/
 COPY prodigy.json /home/
-COPY prodigy.md /home/
+COPY README.md /home/
 COPY recipe.py /home/
 COPY images /home/images/
 
