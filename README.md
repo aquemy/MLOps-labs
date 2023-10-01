@@ -1,12 +1,12 @@
-# narzedzia-uczenia-maszynowego
+# Machine Learning Operations (MLOps)
 
-Repozytorium zawiera materiały dydaktyczne na potrzeby przedmiotu "Narzędzia uczenia maszynowego" realizowanego na specjalności "sztuczna inteligencja" na II stopniu studiów na kierunku Informatyka na Politechnice Poznańskiej
+The repository contains teaching materials for the subject "MLOps" (pl. "Narzędzia uczenia maszynowego") carried out in the "Artificial Intelligence" specialty at the second cycle of studies in the field of computer science at Poznań University of Technology.
 
 ---
 
 ### DVC
 
-Przejdź do katalogu `lab-01-dvc`, zbuduj kontener Docker, uruchom go i kontynuuj zgodnie z instrukcjami zamieszczonymi w `lab-01-dvc/README.md`.
+Navigate to the `lab-01-dvc` directory, build the Docker container, run it, and continue following the instructions in the file `lab-01-dvc/README.md`.
 
 ```bash
 cd lab-01-dvc
@@ -16,7 +16,7 @@ docker container run -it dvc:latest /bin/bash
 
 ### Snorkel
 
-Przejdź do katalogu `lab-02-snorkel`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera zobaczysz adresy, pod którymi serwer `jupyter` jest dostępny poza kontenerem. Otwórz jeden z adresów, uruchom w przeglądarce plik `snorkel.ipynb` i wykonaj ćwiczenie.
+Go to the `lab-02-snorkel` directory, build the Docker container and run it. After starting the container, you will see the addresses where the `jupyter` server is available outside the container. Open one of the addresses, run the `snorkel.ipynb` file in your browser and perform the exercise.
 
 ```bash
 cd lab-02-snorkel
@@ -26,7 +26,7 @@ docker container run -it -p 8888:8888 snorkel:latest
 
 ### Streamlit
 
-Przejdź do katalogu `lab-03-streamlit`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera zobaczysz adres, pod którym działa aplikacja Streamlit.
+Go to the `lab-03-streamlit` directory, build the Docker container and run it. Once the container is launched, you will see the address where the Streamlit application is running. Continue following the instructions in the file `lab-03-streamlit/README.md`.
 
 ```bash
 cd lab-03-streamlit
@@ -34,7 +34,11 @@ docker build -t streamlit:latest .
 docker container run -it -p 8501:8501 streamlit:latest
 ```
 
-Otwórz nowe okno konsoli i sprawdź identyfikator uruchomionego kontenera Docker. Korzystając z tego identyfikatora uruchom konsolę wewnątrz kontenera. Ze względu na ogólną trudność współdzielenia clipboardu między kontenerem i hostem, najprościej jest wykonać ćwiczenie uruchamiając w konsoli edytor `vim` i dzieląc ekran na dwie części (komenda `:split`). Przechodzenie między podzielonymi panelami w `vim` jest realizowane przez sekwencję klawiszy `ctrl-W ctrl-W`.
+Open a new console window and check the ID of the running Docker container. Using this ID, launch the console inside the container.
+
+Due to the general difficulty of sharing a clipboard between a container and a host, the easiest way to perform the exercise is to run the `vim` editor in the console and split the screen into two parts (`:split` command). Moving between split panels in `vim` is accomplished by the key sequence `ctrl-W ctrl-W`.
+Alternatively, you can use `ctrl+shift+c` and `ctrl+shift+v` to copy and past from the host to the container and vice-versa.
+
 
 ```bash
 docker ps
@@ -44,7 +48,7 @@ vim -o streamlit.md helloworld.py
 
 ### Ludwig
 
-Przejdź do katalogu `lab-04-ludwig`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera wejdź do linii poleceń i wykonaj instrukcje zawarte w pliku `ludwig.md`
+Go to the `lab-04-ludwig` directory, build the Docker container and run it (instructions below). After starting the container, enter the command line and follow the instructions in the file `lab-04-ludwig/README.md`.
 
 ```bash
 cd lab-04-ludwig
@@ -54,7 +58,7 @@ docker container run -it -p 8081:8081 ludwig:latest /bin/bash
 
 ### Prodigy
 
-Przejdź do katalogu `lab-05-prodigy`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera wejdź do linii poleceń i wykonaj instrukcje zawarte w pliku `prodigy.md`
+Go to the `lab-05-prodigy` directory, build the Docker container and run it (instructions below). After starting the container, enter the command line and follow the instructions in the file `lab-04-ludwig/README.md`.
 
 ```bash
 cd lab-05-prodigy
@@ -64,7 +68,7 @@ docker container run -it -p 8080:8080 prodigy:latest /bin/bash
 
 ### MLFlow
 
-Przejdź do katalogu `lab-06-mlflow`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera wejdź do linii poleceń i wykonaj instrukcje zawarte w pliku `mlflow.md`
+Go to the `lab-06-mlflow` directory, build the Docker container and run it (instructions below). After starting the container, enter the command line and follow the instructions in the file `lab-06-mlflow/README.md`.
 
 ```bash
 cd lab-06-mlflow
@@ -74,7 +78,7 @@ docker container run -it -p 5000:5000 mlflow:latest /bin/bash
 
 ### nlpaug & checklist
 
-Przejdź do katalogu `lab-07-nlpaug`, zbuduj kontener Docker i uruchom go (instrukcja poniżej). Po uruchomieniu kontenera wejdź do uruchomionego notatnika i wykonaj ćwiczenie.
+Go to the `lab-07-nlpaug` directory, build the Docker container and run it (instructions below). After starting the container, go to the running notebook and perform the exercise.
 
 ```bash
 cd lab-07-mlflow
