@@ -4,7 +4,7 @@ WORKDIR /home
 
 COPY . /home
 
-RUN pip install notebook jupyterlab
+RUN pip install notebook==6.0.1 jupyterlab
 
 RUN apt-get update \
 	&& curl -sL https://deb.nodesource.com/setup_19.x | bash - \
