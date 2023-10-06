@@ -35,7 +35,7 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     conda install python=3.6 pip 
 
 COPY train.py /home/
-COPY mlflow.md /home/
+COPY README.md /home/
 COPY regression /home/regression/
 COPY wine-quality /home/wine-quality/
 COPY data /home/data/

@@ -1,39 +1,38 @@
 # MLflow
 
-[MLflow](https://mlflow.org) to biblioteka która obsługuje wiele elementów procesu MLOps, w tym:
+[MLflow](https://mlflow.org) is a library that supports many elements of the MLOps process, including:
 
-- śledzenie różnych wersji eksperymentów (_MLflow Tracking_)
-- wdrożenie modelu ML w postaci artefaktu do wielokrotnego użycia i współdzielenia (_MLflow Projects_)
-- zarządzanie modelami zbudowanymi w oparciu o różne biblioteki (_MLflow Projects_)
-- udostępnianie centralnego repozytorium modeli wraz z zarządzaniem ich cyklem życia (_MLflow Project Repository_)
+- tracking different versions of experiments (_MLflow Tracking_)
+- implementation of the ML model in the form of an artifact for reuse and sharing (_MLflow Projects_)
+- management of models built based on various libraries (_MLflow Projects_)
+- providing a central repository of models along with managing their life cycle (_MLflow Project Repository_)
 
-Jedną z ciekawych cech MLflow jest fakt, że biblioteka jest całkowicie agnostyczna względem bibliotek do tworzenia modeli ML. Cała funkcjonalność jest dostępna z poziomu REST API oraz jako zbiór komend linii poleceń, istnieją też API do Pythona, Javy, oraz R.
+One of the interesting features of MLflow is that the library is completely agnostic to libraries for creating ML models. All functionality is available from the REST API and as a set of command line commands, and there are also APIs for Python, Java, and R.
 
-Fundamentalnym pojęciem w ramach `mlflow` jest **artefakt**. Jest to dowolny plik lub katalog związany z projektem, przechowywany w zewnętrznym repozytorium. Artefakty mogą być logowane w repozytorium, mogą być też pobierane i zapisywane do repozytorium. Artefakty mogą być obiektami na dysku loklanym, ale mogą to też być pliki przechowywane na S3, w HDFS, modele wraz z wersjami, itp.
+A fundamental concept within `mlflow` is **artifact**. This is any project-related file or directory stored in an external repository. Artifacts can be logged into the repository, and they can also be downloaded and saved to the repository. Artifacts can be objects on a local disk, but they can also be files stored on S3, in HDFS, models with versions, etc.
 
-Scenariusze użycia `mlflow` obejmują:
+`mlflow` usage scenarios include:
 
-- pracę indywidualnych badaczy i inżynierów: możliwość śledzenia treningu na lokalnych maszynach, utrzymywanie wielu wersji konfiguracji, wygodne przechowywanie modeli przygotowanych w różnych architekturach
-- pracę zespołów _data science_: możliwość porównywania wyników różnych algorytmów, unifikacja terminologii (nazwy skryptów i parametrów), współdzielenie modeli
-- pracę dużych organizacji: współdzielenie i wielokrotne użycie modeli i projektów, wymiana wiedzy, ułatwienie produktyzacji procesów
-- MLOps: możliwość wdrażania modeli z różnych bibliotek jako prostych plików w systemie operacyjnym
-- badaczy: możliwość współdzielenia i uruchamiania repozytoriów GitHub
+- for individual researchers and engineers: ability to track training on local machines, maintain multiple configuration versions, convenient storage of models prepared in various architectures
+- for _data science_ teams: ability to compare the results of different algorithms, unification of terminology (names of scripts and parameters), sharing of models
+- for large organizations: sharing and reusing models and designs, exchanging knowledge, facilitating process productization
+- for MLOps: ability to deploy models from various libraries as simple files in the operating system
+- for researchers: ability to share and run GitHub repositories
 
-W poniższym przykładzie zbudujemy model regresji liniowej przewidującej jakość wina. 
+In the below example, we will build a linear regression model to predict wine quality.
 
-### Śledzenie przebiegu eksperymentu
+### Experiment tracking
 
-Rekordy opisujące poszczególne uruchomienia (_runs_) mogą być przechowywane:
-- w lokalnym katalogu
-- w bazie danych (MySQL, SQLite, PostgreSQL)
-- na serwerze HTTP z uruchomionym MLFlow
-- w przestrzeni pracy Databricks
+Records describing individual runs can be stored:
+- in a local directory
+- in a database (MySQL, SQLite, PostgreSQL)
+- on an HTTP server running MLFlow
+- in a Databricks workspace
 
-Stwórz plik `train.py` i zamieść w nim poniższy kod:
-
+Go to the folder `wine-quality` and create a `train.py` file and include the following code in it:
 
 ```python
-import plac
+import plac # note(aquemy): I would use `typer` right now
 
 import pandas as pd
 import numpy as np
@@ -81,47 +80,45 @@ def main(input_file: Path, alpha: float=0.5, l1_ratio: float=0.5):
         mlflow.log_metric('mae', mae)
         mlflow.log_metric('r2score', r2score)
 
-        mlflow.sklearn.log_model(lr, 'model')
-
 
 if __name__ == "__main__":
     plac.call(main)
 ```
 
-Obejrzyj zawartość pliku z danymi
+View the contents of the data file
 
 ```bash
-bash$ cat winequality.csv
+cat winequality.csv
 ```
 
-Sprawdź poprawność funkcjonowania skryptu uruchamiając go z linii poleceń
+Check the correct functioning of the script by running it from the command line
 
 ```bash
-bash$ python train.py --help
+python train.py --help
 
-bash$ python train.py --input-file data/winequality.csv --alpha 0.4 --l1-ratio 0.75
+python train.py --input-file data/winequality.csv --alpha 0.4 --l1-ratio 0.75
 ```
 
-Obejrzyj strukturę katalogu `mlruns`
+Observe the structure of the directory `mlruns` 
 
 ```bash
-bash$ tree mlruns
+tree mlruns
 ```
 
-Uruchom kilka razy trening przekazując różne wartości parametrów
+Run the training script several times, using different parameter values.
 
-Uruchom serwer MLflow i obejrzyj informacje zgromadzone o przebiegu eksperymentu pod adresem [localhost:5000](http://localhost:5000)
+Start the MLflow server and view the information collected about the experiment at [localhost:5000](http://localhost:5000)
 
 ```bash
-bash$ mlflow ui -p 5000 -h 0.0.0.0
+mlflow ui -p 5000 -h 0.0.0.0
 ```
 
-Wróć do linii poleceń i uruchom serię eksperymentów, sprawdzając różne kombinacje parametrów. Wcześniej upewnij się, że ustawienia językowe terminala są angielskie (przecinek dziesiętny powoduje błąd)
+Return to the command line and run a series of experiments, testing different combinations of parameters. Beforehand, make sure your terminal language settings are English (decimal point causes an error).
 
 ```bash
-bash$ export LANG=en_US
+export LANG=en_US
 
-bash$ for a in $(seq 0.1 0.1 1.0)
+for a in $(seq 0.1 0.1 1.0)
     do
         for l in $(seq 0.1 0.1 1.0)
         do
@@ -130,17 +127,17 @@ bash$ for a in $(seq 0.1 0.1 1.0)
     done
 ```
 
-Ponownie uruchom serwer `mlflow` i obejrzyj wyniki. Zaznacz wszystkie przebiegi i dodaj do porównania. Sprawdź dostępne wizualizacje poszczególnych miar.
+Restart the `mlflow` server and explore the results. Select all runs and add to comparison. Check the available visualizations of individual measures.
 
-Zmodyfikuj plik `train.py` dodając, po logowaniu metryk, logowanie modelu. W tym celu dopisz poniższą linię:
+Modify the `train.py` file by adding, after the metrics logging, the model logging. To do this, add the following line:
 
 ```python
-mlflow.sklearn.log_metric(lr, 'model')
+mlflow.sklearn.log_model(lr, 'model')
 ```
 
-a następnie uruchom jednorazowo trening i obejrzyj wyniki. Zobacz, w jakiej postaci model został zapisany w repozytorium.
+Then run the training once and see the results. See in what form the model has been saved in the repository.
 
-Dodaj w kodzie fragment powodujący przypisanie tagu do danego eksperymentu i zaobserwuj tagi w repozytorium.
+Add a fragment in the code that assigns a tag to a given experiment and observe the tags in the repository.
 
 ```python
 
@@ -149,21 +146,21 @@ mlflow.set_tag('version','0.9')
 
 # set a list of tags
 mlflow.set_tags({
-    'author': 'Mikolaj Morzy',
-    'date': '01.01.2021',
+    'author': 'Alexandre Quemy',
+    'date': '01.09.2023',
     'release': 'candidate'
 })
 ```
 
-Sprawdź, jak jest zapisywane w repozytorium niepoprawne uruchomienie treningu. W tym celu uruchom skrypt z błędnym wywołaniem parametrów.
+Check how incorrect training runs are saved in the repository. To do this, run the script with the incorrect parameter call.
 
-### Automatyczne śledzenie parametrów i metryk
+### Automatic tracking of parameters and metrics
 
-`mlflow` potrafi w sposób automatyczny śledzić wartości parametrów i metryk dla wielu popularnych bibliotek ML. Zmień zawartość pliku `train.py` w następujący sposób:
+`mlflow` can automatically track parameter and metric values for many popular ML libraries. Change the contents of the `train.py` file as follows:
 
-- dodaj import klasy `MlflowClient` z modułu `mlflow.tracking`
-- zakomentuj cały kod uruchomiony w kontekście `mlflow.start_run()`
-- bezpośrednio po podziale na zbiór uczący i testujący dodaj ponizszy kod:
+- add import of the `MlflowClient` class from `mlflow.tracking` module
+- comment out all code running in the context manager `mlflow.start_run()`
+- immediately after dividing into training and testing sets, add the following code:
 
 ```python
 mlflow.sklearn.autolog()
@@ -175,7 +172,7 @@ with mlflow.start_run() as run:
 autolog(mlflow.get_run(run_id=run.info.run_id))
 ```
 
-- dodaj wyżej w kodzie poniższą funkcję:
+- add the following function above the code:
 
 ```python
 def autolog(run):
@@ -199,35 +196,34 @@ def autolog(run):
     print(f"tags: {tags}")
 ```
 
-Uruchom ponownie kod treningu i zaobserwuj wynik.
+Run the training code again and observe the result.
 
-### Grupowanie przebiegów w eksperymenty
+### Grouping runs into experiments
 
-`mlflow` pozwala na grupowanie wielu przebiegów w postaci nazwanych eksperymentów. Pierwszym krokiem jest stworzenie nazwanego eksperymentu. Wykonaj poniższą komendę:
-
-```bash
-bash$ mlflow experiments create --experiment-name simple-regression
-```
-
-Powtórz wcześniejsze ćwiczenie, wcześniej ustawiając zawartość zmiennej środowiskowej `MLFLOW_EXPERIMENT_NAME`
+`mlflow` allows you to group multiple runs into named experiments. The first step is to create a named experiment. For instance:
 
 ```bash
-bash$ export MLFLOW_EXPERIMENT_NAME=simple-regression
-
-bash$ python train.py -i data/winequality.csv
-bash$ python train.py -i data/winequality.csv -a 0.1
-bash$ python train.py -i data/winequality.csv -l 0.9
+mlflow experiments create --experiment-name simple-regression
 ```
 
-i obejrzyj wynik w repozytorium.
+Repeat the previous runs, first setting the content of the `MLFLOW EXPERIMENT NAME` environment variable
 
-Alternatywą dla użycia zmiennej środowiskowej jest przekazanie parametru `--experiment_name` w momencie wywołania polecenia `mlflow experiment run`.
+```bash
+export MLFLOW_EXPERIMENT_NAME=simple-regression
 
-### Pakowanie modelu
+python train.py -i data/winequality.csv
+python train.py -i data/winequality.csv -a 0.1
+python train.py -i data/winequality.csv -l 0.9
+```
+and view the result in the repository.
 
-W następnym kroku zbudujemy całą paczkę zawierającą kod trenujący prosty model. Utwórz katalog `regression` i stwórz w nim dwa pliki: `MLProject` oraz `conda.yaml`.
+Instead of an environment variable, it is possible to use the parameter `--experiment_name` when invoking the `mlflow experiment run` command.
 
-Plik `MLProject` zawiera definicję projektu MLflow. Umieść w nim następującą treść:
+### Packing a model
+
+In the next step, we will build an entire package containing code to train a simple model. Create a `regression` directory and create two files in it: `MLProject` and `conda.yaml`.
+
+The `MLProject` file contains the MLflow project definition. Place the following content in it:
 
 ```
 name: linear_regression_example
@@ -239,7 +235,7 @@ entry_points:
         command: "python train.py"
 ```
 
-Plik `conda.yaml` zawiera definicję środowiska w którym będzie uruchomiony kod.
+The `conda.yaml` file contains the definition of the environment in which the code will run.
 
 ```yaml
 name: regression-example
@@ -252,10 +248,10 @@ dependencies:
   - scikit-learn
   - pip
   - pip:
-    - mlflow>=1.2333
+    - mlflow>=1.
 ```
 
-Plik `train.py` zawiera kod treningu modelu. W tym przypadku jest to bardzo prosty kod trenujący klasyfikator na zabawkowym przykładzie.
+The `train.py` file contains the model training code. In this case, it is a very simple code that trains a classifier on a toy example.
 
 ```python
 import numpy as np
@@ -282,37 +278,38 @@ if __name__ == "__main__":
     print(f"Model saved in run {mlflow.active_run().info.run_uuid}")
 ```
 
-Uruchom paczkę wydając poniższe polecenie i wcześniej wskazując na lokalizację Condy:
+Run the package by issuing the following command and specifying the conda location:
 
 ```bash
-export MLFLOW_CONDA_HOME=/path/to/local/conda
+export MLFLOW_CONDA_HOME=/root/miniconda3
 
-bash$ mlflow run regression
+mlflow run regression
 ``` 
 
-### Uruchomienie modelu bezpośrednio z repozytorium
+### Running the model directly from the repository
 
-W następnym kroku zapiszemy tę paczkę jako repozytorium Git i uruchomimy eksperyment bezpośrednio z repozytorium
+In the next step, we will save this package as a Git repository and run the experiment directly from the repository
 
-- utwórz zdalne repozytorium na GitHubie (np. o nazwie `mlflow_example`
-- wejdź do katalogu `regression` i zainicjalizuj repozytorium komendą `git init`
-- dodaj zawartość katalogu do repozytorium komendą `git add .`
-- stwórz pierwszy commit komendą `git commit -m "MLflow experiment repo created"`
-- skopiuj URL zdalnego repozytorium
-- wykonaj poniższe komendy
+- create a remote repository on GitHub (e.g. called `mlflow_example`
+- enter the `regression` directory and initialize the repository with the `git init` command
+- add the contents of the directory to the repository with the `git add .` command
+- create the first commit with the command `git commit -m "feat: MLflow experiment repo created"`
+- copy the remote repository URL
+- add the remote repository to your local repository configuration
 
 ```bash
-bash$ git remote add origin <url zdalnego repozytorium>
-bash$ git remote -v
+git remote add origin <url remote repository>
+git remote -v
 ```
-- wypchnij lokalne zmiany do zdalnego repozytorium komendą `git push origin master`
-- uruchom eksperyment w zdalnym repozytorium komendą `mlflow run <url zdalnego repozytorium>`
+- push local changes to the remote repository with `git push origin main`
+- run the experiment in the remote repository with the command `mlflow run <remote repository url>`
+  
+### Packing the model with parameters
 
-### Pakowanie modelu z parametrami
+In the next example, we will create an experiment that requires parameters. Create a `wine-quality` directory and create two files in it: `MLProject` and `conda.yaml`.
 
-Jako następny przykład utworzymy eksperyment, który wymaga podania parametrów. Utwórz katalog `wine-quality` i stwórz w nim dwa pliki: `MLProject` oraz `conda.yaml`.
+In the file `MLProject`, place the following content:
 
-W pliku `MLProject` umieść następującą treść:
 
 ```
 name: wine_quality_model
@@ -327,7 +324,7 @@ entry_points:
         command: "python train.py -i {input_file} -a {alpha} -l {l1_ratio}"
 ```
 
-W pliku `conda.yaml` umieść następującą treść:
+In the file `conda.yaml`, put the following content:
 
 ```yaml
 name: wine_quality_model
@@ -335,49 +332,53 @@ channels:
     - defaults
 dependencies:
     - python=3.7
+    - scikit-learn
     - pip
     - pip:
-        - sklearn>=0.23.2
         - mlflow>=1.23
+        - plac
 ```
 
-Przekopiuj do katalogu `wine-quality` także pliki `train.py` i plik z danymi (w poniższym przykładzie jego nazwę zmieniono na `data.csv`).
+Also copy the file `train.py` and the data file to the `wine-quality` directory.
 
-Ustaw zmienną `MLFLOW_CONDA_HOME` tak aby wskazywała Twoją instalacje Condy. Uruchom utworzenie gotowej paczki z modelem, danymi i zależnościami.
+Set the `MLFLOW_CONDA_HOME` variable to point to your Conda installation. Use `mlflow` to run the package:
 
 ```bash
-bash$ mlflow run wine-quality -P input_file=data.csv -P alpha=0.12 -P l1_ratio=0.79
+mlflow run wine-quality -P input_file=data.csv -P alpha=0.12 -P l1_ratio=0.79
 ```
 
-### Serwowanie zbudowanego modelu
+### Serving the model
 
-Utworzony model może zostać z łatwością wdrożony. Obejrzyj jeszcze raz w repozytorium meta-dane przebiegu w którym zalogowano także model. Zwróć uwagę na obecność dwóch plików: spiklowanego modelu oraz pliku tekstowego z meta-danymi. Przeczytaj meta-dane i odnotuj identyfikator przebiegu (`run_id`)
+The model packaged by MLFlow can be easily served. In the repository, have a look for the metadata of one the run. Notice the presence of two files: a bundled model and a text file with metadata. Read the metadata and note the run ID (`run_id`):
 
-Uruchom serwowanie modelu, instalując pakiet `pyenv` i wydając polecenie
+Start serving the model by installing the `pyenv` package and issuing the command
 
 ```bash
-bash$ curl https://pyenv.run | bash
-bash$ export PATH=$HOME/.pyenv/bin:$PATH
+curl https://pyenv.run | bash
+export PATH=$HOME/.pyenv/bin:$PATH
 
-bash$ mlflow models serve -m /path/to/model/subfoler -p 5000 -h 0.0.0.0
+mlflow models serve -m "runs:/<run_id>/model" -p 5000 -h 0.0.0.0
 ```
 
-Korzystając z REST API dokonaj predykcji wydając polecenie
+For instance:
+```bash
+mlflow models serve -m "runs:/02c9f02d80314a0a805a92f81e24153e/models -p 5000 -h 0.0.0.0
+```
+
+Using the REST API, make a prediction by issuing a command
 
 ```bash
-bash$ curl -X POST -H "Content-Type:application/json; format=pandas-split" --data '{"columns":["alcohol", "chlorides", "citric acid", "density", "fixed acidity", "free sulfur dioxide", "pH", "residual sugar", "sulphates", "total sulfur dioxide", "volatile acidity"],"data":[[12.8, 0.029, 0.48, 0.98, 6.2, 29, 3.33, 1.2, 0.39, 75, 0.66]]}' http://localhost:5000/invocations
+curl -X POST -H "Content-Type:application/json; format=pandas-split" --data '{"columns":["alcohol", "chlorides", "citric acid", "density", "fixed acidity", "free sulfur dioxide", "pH", "residual sugar", "sulphates", "total sulfur dioxide", "volatile acidity"],"data":[[12.8, 0.029, 0.48, 0.98, 6.2, 29, 3.33, 1.2, 0.39, 75, 0.66]]}' http://localhost:5000/invocations
 ```
 
-### Zadanie samodzielne
+### Task
 
-Pobierz zbiór danych z [World Happiness Report 2021](https://www.kaggle.com/ajaypalsinghlo/world-happiness-report-2021). 
+Download the dataset from [World Happiness Report 2021](https://www.kaggle.com/ajaypalsinghlo/world-happiness-report-2021).
 
-Korzystając z narzędzia `mlflow` przygotuj paczkę zawierającą kod do trenowania modelu. Zbuduj model [drzewa decyzyjnego](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html) i postaraj się przeprowadzić eksperyment który pozwoli Ci wybrać najlepsze wartości parametrów:
+Using `mlflow`, prepare a package containing the code for training a model. Build a [decision tree](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html) model and try to conduct an experiment that will allow you to choose the best parameter values:
 
-- maksymalna głębokość drzewa
-- miara oceny punktu podziału
-- minimalna liczba instancji w liściu
+- maximum tree depth
+- a measure of the division point assessment
+- minimum number of instances in a leaf
 
-W eksperymencie posłuż się metrykami średniego błędu bezwględnego, średniego błędu kwadratowego, oraz współczynnika determinacji R2.
-
-Po wytreniowaniu modelu przygotuj paczkę zawierającą cały kod i udostępnij model do predykcji przy użyciu protokołu REST API.
+In the experiment, use the metrics of mean absolute error, mean squared error, and the coefficient of determination R2.
