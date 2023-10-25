@@ -13,9 +13,8 @@ RUN apt-get update && apt-get install -y \
     vim \
     && rm -rf /var/lib/apt/lists/*
 
-COPY helloworld.py /home/helloworld.py
 COPY titanic.csv /home/titanic.csv
-COPY streamlit.md /home/streamlit.md
+COPY README.md /home/streamlit.md
 
 EXPOSE 8501
 
