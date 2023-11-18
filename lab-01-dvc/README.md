@@ -138,7 +138,6 @@ git commit data/adult.data.dvc -m "feat: revert deletion of federal workers"
 Once we configured a `dvc` environment jointly with  `git`, we can easily use `dvc` to quickly download data and models, share data with others, etc. The result of the previous part has been placed in the repository https://github.com/megaduks/dvc-tutorial and now we will see how to display a list of versioned data and work with it.
 
 
-
 ```bash
 dvc list https://github.com/megaduks/dvc-tutorial data
 ```
@@ -440,7 +439,7 @@ You can also visualize the current pipeline using the `dvc dag` command..
 
 ## Experiments
 
-The last element of `dvc` that we will see are the experiments. However, before we move on to experiments, we will prepare a new stageto assess the quality of the trained models. Create a file `evaluate.py` and place the following code in it.
+The last element of `dvc` that we will see are the experiments. However, before we move on to experiments, we will prepare a new stage to assess the quality of the trained models. Create a file `evaluate.py` and place the following code in it.
 
 
 
