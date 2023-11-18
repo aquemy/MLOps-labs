@@ -25,7 +25,7 @@ All work with Ludwig comes down to properly preparing a data file (in `csv` form
 
 The idea of processing in Ludwig is illustrated in the diagram below:
 
-![ludwig structure](image.png)
+![ludwig structure](ludwig.png)
 
 By combining a specific type of input with a specific type of output, we obtain a specific type of model:
 - text + categorical = text classification
