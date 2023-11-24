@@ -7,15 +7,15 @@
 - management of models built based on various libraries (_MLflow Projects_)
 - providing a central repository of models along with managing their life cycle (_MLflow Project Repository_)
 
-One of the interesting features of MLflow is that the library is completely agnostic to libraries for creating ML models. All functionality is available from the REST API and as a set of command line commands, and there are also APIs for Python, Java, and R.
+One of the interesting features of MLflow is that the library is completely agnostic to libraries for creating ML models. All functionalities are available via the REST API and as a set of command line commands, and there are also APIs for Python, Java, and R.
 
 A fundamental concept within `mlflow` is **artifact**. This is any project-related file or directory stored in an external repository. Artifacts can be logged into the repository, and they can also be downloaded and saved to the repository. Artifacts can be objects on a local disk, but they can also be files stored on S3, in HDFS, models with versions, etc.
 
 `mlflow` usage scenarios include:
 
-- for individual researchers and engineers: ability to track training on local machines, maintain multiple configuration versions, convenient storage of models prepared in various architectures
-- for _data science_ teams: ability to compare the results of different algorithms, unification of terminology (names of scripts and parameters), sharing of models
-- for large organizations: sharing and reusing models and designs, exchanging knowledge, facilitating process productization
+- for individual researchers and engineers: the ability to track training on local machines, maintain multiple configuration versions, convenient storage of models prepared in various architectures
+- for _data science_ teams: the ability to compare the results of different algorithms, unification of terminology (names of scripts and parameters), sharing of models
+- for large organizations: sharing and reusing models and designs, exchanging knowledge, facilitating processes and productization
 - for MLOps: ability to deploy models from various libraries as simple files in the operating system
 - for researchers: ability to share and run GitHub repositories
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
 View the contents of the data file
 
 ```bash
-cat winequality.csv
+cat data/winequality.csv
 ```
 
 Check the correct functioning of the script by running it from the command line
@@ -311,7 +311,7 @@ In the next example, we will create an experiment that requires parameters. Crea
 In the file `MLProject`, place the following content:
 
 
-```
+```yaml
 name: wine_quality_model
 conda_env: conda.yaml
 
@@ -362,7 +362,7 @@ mlflow models serve -m "runs:/<run_id>/model" -p 5000 -h 0.0.0.0
 
 For instance:
 ```bash
-mlflow models serve -m "runs:/02c9f02d80314a0a805a92f81e24153e/models -p 5000 -h 0.0.0.0
+mlflow models serve -m "runs:/02c9f02d80314a0a805a92f81e24153e/models" -p 5000 -h 0.0.0.0
 ```
 
 Using the REST API, make a prediction by issuing a command

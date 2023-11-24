@@ -279,7 +279,7 @@ curl http://localhost:8081/predict -X POST -F 'image_path=@data/shapes/serve/tri
 
 ## Access via Python API
 
-Of course, all Ludwig functionality is also available in Python. The example below shows how this can be done.
+Of course, all Ludwig functionalities are also available in Python. The example below shows how to use the Python API to define, train and use a model for text classification.
 
 
 ```python

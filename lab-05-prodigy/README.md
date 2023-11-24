@@ -1,5 +1,7 @@
 # Data annotation with Prodigy
 
+Open-source alternative: http://doccano.herokuapp.com/
+
 ## Recognize named entities (NER)
 
 1. Prodigy is a tool strongly related to `spacy` library. It defines named entity recognition patterns in a analogous way to the matcher mechanism present in `spacy`.
